@@ -22,37 +22,49 @@
 
         public static string ImportCreators(BoardgamesContext context, string xmlString)
         {
+            //using Data Transfer Object Class to map it with Creators
             var serializer = new XmlSerializer(typeof(ImportCreatorsDTO[]), new XmlRootAttribute("Creators"));
+
+            //Deserialize method needs TextReader object to convert/map 
             using StringReader inputReader = new StringReader(xmlString);
             var creatorsArrayDTOs = (ImportCreatorsDTO[])serializer.Deserialize(inputReader);
 
+            //using StringBuilder to gather all info in one string
             StringBuilder sb = new StringBuilder();
+
+            //creating List where all valid creators can be kept
             List<Creator> creatorsXML = new List<Creator>();
 
             foreach (ImportCreatorsDTO creator in creatorsArrayDTOs)
             {
-                Creator creatorToAdd = new Creator
-                {
-                    FirstName = creator.FirstName,
-                    LastName = creator.LastName
-                };
-
+                //validating info for creator from data
                 if (!IsValid(creator))
                 {
                     sb.AppendLine(ErrorMessage);
                     continue;
                 }
 
+                //creating a valid creator
+                Creator creatorToAdd = new Creator
+                {
+                    //using identical properties in order to map successfully
+                    FirstName = creator.FirstName,
+                    LastName = creator.LastName
+                };
+
                 foreach (var boardgame in creator.Boardgames)
                 {
+                    //validating info for boardgame from data
                     if (!IsValid(boardgame))
                     {
                         sb.AppendLine(ErrorMessage);
                         continue;
                     }
 
+                    //adding valid boardgame
                     creatorToAdd.Boardgames.Add(new Boardgame()
                     {
+                        //using identical properties in order to map successfully
                         Name = boardgame.Name,
                         Rating = boardgame.Rating,
                         YearPublished = boardgame.YearPublished,
@@ -68,16 +80,22 @@
 
             context.Creators.AddRange(creatorsXML);
 
+            //actual importing info from data
             context.SaveChanges();
 
+            //using TrimEnd() to get rid of white spaces
             return sb.ToString().TrimEnd();
         }
 
         public static string ImportSellers(BoardgamesContext context, string jsonString)
         {
+            //using Data Transfer Object Class to map it with sellers
             var sellersArray = JsonConvert.DeserializeObject<ImportSellersDTO[]>(jsonString);
 
+            //using StringBuilder to gather all info in one string
             StringBuilder sb = new StringBuilder();
+
+            //creating List where all valid sellers can be kept
             List<Seller> sellerList = new List<Seller>();
 
             var existingBoardgameIds = context.Boardgames
@@ -86,15 +104,17 @@
 
             foreach (ImportSellersDTO sellerDTO in sellersArray)
             {
-
+                //validating info for seller from data
                 if (!IsValid(sellerDTO))
                 {
                     sb.AppendLine(ErrorMessage);
                     continue;
                 }
 
+                //creating a valid seller
                 Seller sellerToAdd = new Seller()
                 {
+                    //using identical properties in order to map successfully
                     Name = sellerDTO.Name,
                     Address = sellerDTO.Address,
                     Country = sellerDTO.Country,
@@ -111,9 +131,11 @@
                         continue;
                     }
 
+                    //adding valid BoardgameSeller
                     sellerToAdd.BoardgamesSellers.Add(new BoardgameSeller()
                     {
-                        Seller = sellerToAdd,// !!!!!!!!!!!
+                        //using identical properties in order to map successfully
+                        Seller = sellerToAdd,
                         BoardgameId = boardgameId
                     });
 
@@ -124,8 +146,11 @@
             }
 
             context.AddRange(sellerList);
+
+            //actual importing info from data
             context.SaveChanges();
 
+            //using TrimEnd() to get rid of white spaces
             return sb.ToString().TrimEnd();
         }
 
