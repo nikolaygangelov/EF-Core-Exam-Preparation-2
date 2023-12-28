@@ -31,6 +31,6 @@ namespace Boardgames.DataProcessor.ImportDto
         public string Website { get; set; }
 
         [JsonProperty("Boardgames")]
-        public int[] BoardgamesId { get; set; }
+        public int[] BoardgamesId { get; set; } //type "int" in order to map with given xml file
     }
 }
