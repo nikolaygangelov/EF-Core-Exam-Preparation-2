@@ -23,8 +23,7 @@ namespace Boardgames.DataProcessor.ImportDto
         [Range(2018, 2023)]
         public int YearPublished { get; set; }
         [Required]
-        //[EnumDataType(typeof(CategoryType))]
-        public int CategoryType { get; set; }
+        public int CategoryType { get; set; } //type "int" in order to map with type in given xml file
         [Required]
         public string Mechanics { get; set; }
     }
