@@ -98,6 +98,7 @@
             //creating List where all valid sellers can be kept
             List<Seller> sellerList = new List<Seller>();
 
+            //taking only unique boardgames
             var existingBoardgameIds = context.Boardgames
                 .Select(bg => bg.Id)
                 .ToArray();
@@ -125,6 +126,7 @@
 
                 foreach (int boardgameId in sellerDTO.BoardgamesId.Distinct())
                 {
+                    //validating only unique boardgames
                     if (!existingBoardgameIds.Contains(boardgameId))
                     {
                         sb.AppendLine(ErrorMessage);
