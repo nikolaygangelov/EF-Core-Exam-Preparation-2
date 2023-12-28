@@ -57,7 +57,7 @@
 
         public static string ExportSellersWithMostBoardgames(BoardgamesContext context, int year, double rating)
         {
-            //turning needed info about products into a collection using anonymous object
+            //turning needed info about sellers into a collection using anonymous object
             //using less data
             var sellersAndBoardgames = context.Sellers
                 .Where(s => s.BoardgamesSellers.Any(bgs => bgs.Boardgame.YearPublished >= year && bgs.Boardgame.Rating <= rating))
